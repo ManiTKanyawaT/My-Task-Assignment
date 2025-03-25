@@ -1,18 +1,18 @@
-class Task {
+class TaskInfo {
   final String title;
   final String description;
   final DateTime dueDate;
   final String status; 
 
-  Task({
+  TaskInfo({
     required this.title,
     required this.description,
     required this.dueDate,
     required this.status,
   });
 
-  factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
+  factory TaskInfo.fromJson(Map<String, dynamic> json) {
+    return TaskInfo(
       title: json['title'],
       description: json['description'],
       dueDate: DateTime.parse(json['dueDate']),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class ListScreenView extends GetView<ListScreenController> {
   const ListScreenView({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

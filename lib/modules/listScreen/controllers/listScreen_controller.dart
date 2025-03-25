@@ -1,7 +1,9 @@
+import 'package:flutter_task_assignment/api/task_api.dart';
+import 'package:flutter_task_assignment/models/task_info.dart';
 import 'package:get/get.dart';
 
 class ListScreenController extends GetxController {
-  // final ExampleApi _exampleApi;
+  final TaskApi _taskApi;
 
   // final _ex = "".obs;
   // String get ex => _ex.value;
@@ -9,22 +11,25 @@ class ListScreenController extends GetxController {
   // final _exInfo = Rxn<ExampleInfo>();
   // ExampleInfo? get exInfo => _exInfo.value;
 
-  // final _listEx = <ExampleInfo>[].obs;
-  // List<ExampleInfo> get listEx => _listEx;
+  final _userTask = <TaskInfo>[].obs;
+  List<TaskInfo> get userTask => _userTask;
 
-  // ExampleController(this._exampleApi);
+  ListScreenController(this._taskApi);
 
-  // Future<void> fetchExample() async {
-  //   final result = await _exampleApi.fetchExamples();
-  //   // do something!!!
-  //   if (kDebugMode) {
-  //     print("=---> $result");
-  //   }
-  // }
+  @override
+  void onInit() {
+    fetchTask();
+    super.onInit();
+  }
 
-  // void setEx(String ex) {
-  //   _ex.value = ex;
-  // }
+  Future<void> fetchTask() async {
+    final result = await _taskApi.getTasksDetails();
+    setDetails(result);
+  }
+
+  void setDetails(List<TaskInfo> info) {
+    _userTask.value = info;
+  }
 
   // void setExInfo(String name, {String? remark}) {
   //   _exInfo.value = ExampleInfo(name, remark: remark);
