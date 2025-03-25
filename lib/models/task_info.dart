@@ -1,7 +1,7 @@
 class TaskInfo {
   final String title;
   final String description;
-  final DateTime dueDate;
+  final String dueDate;
   final String status; 
 
   TaskInfo({
@@ -15,7 +15,7 @@ class TaskInfo {
     return TaskInfo(
       title: json['title'],
       description: json['description'],
-      dueDate: DateTime.parse(json['dueDate']),
+      dueDate: json['dueDate'],
       status: json['status'],
     );
   }
@@ -24,7 +24,7 @@ class TaskInfo {
     return {
       'title': title,
       'description': description,
-      'dueDate': dueDate.toIso8601String(),
+      'dueDate': dueDate,
       'status': status,
     };
   }
