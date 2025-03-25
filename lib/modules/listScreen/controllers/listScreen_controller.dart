@@ -1,9 +1,12 @@
 import 'package:flutter_task_assignment/api/task_api.dart';
 import 'package:flutter_task_assignment/models/task_info.dart';
+import 'package:flutter_task_assignment/shared/storage/get_storage.dart';
 import 'package:get/get.dart';
 
 class ListScreenController extends GetxController {
   final TaskApi _taskApi;
+
+  final GetStore getStore = Get.find<GetStore>();
 
   // final _ex = "".obs;
   // String get ex => _ex.value;
@@ -24,11 +27,20 @@ class ListScreenController extends GetxController {
 
   Future<void> fetchTask() async {
     final result = await _taskApi.getTasksDetails();
-    setDetails(result);
+    await saveTaskToStore(result);
   }
 
-  void setDetails(List<TaskInfo> info) {
-    _userTask.value = info;
+  Future<void> saveTaskToStore(List<TaskInfo> result) async {
+    await getStore.saveTask(result);
+    setDetails();
+  }
+
+  void setDetails() {
+    _userTask.value = getStore.getTasks();
+  }
+
+  void refreshPage() {
+    fetchTask();
   }
 
   // void setExInfo(String name, {String? remark}) {
