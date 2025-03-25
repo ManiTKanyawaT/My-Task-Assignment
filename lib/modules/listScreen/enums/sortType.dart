@@ -1,0 +1,1 @@
+enum SortTypeEnum { none, byDate, byStatus }

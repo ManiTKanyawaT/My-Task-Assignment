@@ -1,5 +1,6 @@
 import 'package:flutter_task_assignment/api/task_api.dart';
 import 'package:flutter_task_assignment/models/task_info.dart';
+import 'package:flutter_task_assignment/modules/listScreen/enums/sortType.dart';
 import 'package:flutter_task_assignment/modules/listScreen/views/configs/form_model.dart';
 import 'package:flutter_task_assignment/shared/storage/get_storage.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,9 @@ class ListScreenController extends GetxController {
   var dueDateError = Rx<String?>(null);
 
   ListScreenController(this._taskApi);
+
+  final Rx<SortTypeEnum> _currentSort = SortTypeEnum.none.obs;
+  SortTypeEnum get currentSort => _currentSort.value;
 
   @override
   void onInit() async {
@@ -118,6 +122,42 @@ class ListScreenController extends GetxController {
   void deleteTask(TaskInfo taskToDelete) {
     _userTask.remove(taskToDelete);
     saveTaskToStore(_userTask);
+  }
+
+  void onDateSortPressed() {
+    _toggleSort(SortTypeEnum.byDate);
+  }
+
+  void onStatusSortPressed() {
+    _toggleSort(SortTypeEnum.byStatus);
+  }
+
+  void _toggleSort(SortTypeEnum sortType) {
+    if (_currentSort.value == sortType) {
+      _clearSort();
+    } else {
+      _applySort(sortType);
+    }
+  }
+
+  void _applySort(SortTypeEnum sortType) {
+    _currentSort.value = sortType;
+
+    switch (sortType) {
+      case SortTypeEnum.byDate:
+        _userTask.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+        break;
+      case SortTypeEnum.byStatus:
+        _userTask.sort((a, b) => a.status.compareTo(b.status));
+        break;
+      case SortTypeEnum.none:
+        break;
+    }
+  }
+
+  void _clearSort() {
+    _currentSort.value = SortTypeEnum.none;
+    setTaskDetails();
   }
 
   @override

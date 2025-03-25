@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task_assignment/models/task_info.dart';
 import 'package:flutter_task_assignment/modules/listScreen/controllers/listScreen_controller.dart';
+import 'package:flutter_task_assignment/modules/listScreen/enums/sortType.dart';
 import 'package:flutter_task_assignment/modules/listScreen/views/widgets/TaskDialogBottomSheet.dart';
 import 'package:get/get.dart';
 
@@ -43,13 +44,23 @@ class _ListScreenViewState extends State<ListScreenView> {
       appBar: AppBar(
         title: const Text("Task List"),
         actions: [
-           IconButton(
-            icon: const Icon(Icons.date_range),
-            onPressed: () {},
+          IconButton(
+            icon: Obx(() => Icon(
+                  Icons.date_range,
+                  color: controller.currentSort == SortTypeEnum.byDate
+                      ? Colors.blue
+                      : Colors.grey,
+                )),
+            onPressed: controller.onDateSortPressed,
           ),
           IconButton(
-            icon: const Icon(Icons.sort),
-            onPressed: () {},
+            icon: Obx(() => Icon(
+                  Icons.sort,
+                  color: controller.currentSort == SortTypeEnum.byStatus
+                      ? Colors.blue
+                      : Colors.grey,
+                )),
+            onPressed: controller.onStatusSortPressed,
           ),
           IconButton(
             icon: const Icon(Icons.add),
