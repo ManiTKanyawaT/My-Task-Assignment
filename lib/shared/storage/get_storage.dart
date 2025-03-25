@@ -1,4 +1,4 @@
-import 'dart:convert'; // For jsonDecode
+import 'dart:convert';
 import 'package:flutter_task_assignment/models/task_info.dart';
 import 'package:flutter_task_assignment/shared/constants/storage_keys.dart';
 import 'package:get/get.dart';
@@ -9,32 +9,29 @@ class GetStore extends GetxController {
 
   GetStore(this._box);
 
-  // Save tasks to storage
   Future<void> saveTask(List<TaskInfo> tasks) async {
-    List<String> convertTaskString =
+    List<String> taskJsonList =
         tasks.map((task) => jsonEncode(task.toJson())).toList();
 
-    await _box.write(PrefKey.mytask, convertTaskString);
+    await _box.write(PrefKey.mytask, taskJsonList);
   }
 
-  // Remove all tasks
-  Future<void> removeTask() async {
+  Future<void> removeAllTasks() async {
     await _box.remove(PrefKey.mytask);
   }
 
-  // Retrieve tasks from storage
-  List<TaskInfo> getTasks() {
-    List<String> data = _box.read<List<String>>(PrefKey.mytask) ?? [];
+  Future<List<TaskInfo>> getTasks() async {
+    List<String> data = (_box.read(PrefKey.mytask) ?? []).cast<String>();
 
     return data.map((taskString) {
       return TaskInfo.fromJson(jsonDecode(taskString));
     }).toList();
   }
 
-  // Remove a specific task by its title
-  Future<void> removeTaskByTitle(String taskTitle) async {
-    List<TaskInfo> tasks = getTasks();
-    tasks.removeWhere((task) => task.title == taskTitle);
-    await saveTask(tasks);
-  }
+  // Future<void> removeTaskByTitle(String taskTitle) async {
+  //   List<TaskInfo> tasks = await getTasks();
+  //   tasks.removeWhere((task) => task.title == taskTitle);
+
+  //   await saveTask(tasks);
+  // }
 }

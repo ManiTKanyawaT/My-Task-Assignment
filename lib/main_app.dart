@@ -10,7 +10,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GetStorage shareStorage = GetStorage();
 
     return GetMaterialApp(
       title: 'Task Assignment',
@@ -19,7 +18,8 @@ class MainApp extends StatelessWidget {
       initialRoute: Routes.listScreenView,
       builder: EasyLoading.init(),
       initialBinding: BindingsBuilder(() {
-        Get.put(GetStore(shareStorage));
+        Get.put(GetStore(GetStorage()));
+        
       }),
     );
   }

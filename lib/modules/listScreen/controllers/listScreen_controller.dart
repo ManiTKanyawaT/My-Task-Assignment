@@ -24,10 +24,21 @@ class ListScreenController extends GetxController {
   ListScreenController(this._taskApi);
 
   @override
-  void onInit() {
-    fetchTask();
+  void onInit() async {
+    firstTimeFetchOnly();
     formModels = FormModel.create();
+
     super.onInit();
+  }
+
+  Future<void> firstTimeFetchOnly() async {
+    List<TaskInfo> tasks = await getStore.getTasks();
+
+    if (tasks.isEmpty) {
+      await fetchTask();
+    } else {
+      setTaskDetails();
+    }
   }
 
   Future<void> fetchTask() async {
@@ -37,15 +48,15 @@ class ListScreenController extends GetxController {
 
   Future<void> saveTaskToStore(List<TaskInfo> result) async {
     await getStore.saveTask(result);
-    setDetails();
+    setTaskDetails();
   }
 
-  void setDetails() {
-    _userTask.value = getStore.getTasks();
+  void setTaskDetails() async {
+    _userTask.value = await getStore.getTasks();
   }
 
   void refreshPage() {
-    fetchTask();
+    firstTimeFetchOnly();
   }
 
   void updateTextFieldsFromModel(TaskInfo? data) {
@@ -53,7 +64,6 @@ class ListScreenController extends GetxController {
     formModels.decsController.text = data?.description ?? '';
     formModels.statusController.text = data?.status ?? 'Incomplete';
     formModels.dueDateController.text = formatDate(data?.dueDate);
-
   }
 
   void clearTextFields(TaskInfo? data) {
@@ -88,8 +98,26 @@ class ListScreenController extends GetxController {
   }
 
   String formatDate(String? isoDate) {
-    DateTime dateTime = DateTime.parse(isoDate ?? DateTime.now().toIso8601String());  
+    DateTime dateTime =
+        DateTime.parse(isoDate ?? DateTime.now().toIso8601String());
     return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
+
+  void saveTask(TaskInfo task, {TaskInfo? existingTask}) {
+    if (existingTask != null) {
+      final index = _userTask.indexOf(existingTask);
+      if (index != -1) {
+        _userTask[index] = task;
+      }
+    } else {
+      _userTask.add(task);
+    }
+    saveTaskToStore(_userTask);
+  }
+
+  void deleteTask(TaskInfo taskToDelete) {
+    _userTask.remove(taskToDelete);
+    saveTaskToStore(_userTask);
   }
 
   @override

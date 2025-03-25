@@ -137,8 +137,6 @@ class TaskDialogBottomSheet extends StatelessWidget {
                             controller
                                 .formModels.statusController.text.isNotEmpty &&
                             controller
-                                .formModels.decsController.text.isNotEmpty &&
-                            controller
                                 .formModels.dueDateController.text.isNotEmpty) {
                           final task = TaskInfo(
                             title: controller.formModels.titleController.text,

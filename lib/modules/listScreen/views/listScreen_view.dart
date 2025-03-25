@@ -29,7 +29,9 @@ class _ListScreenViewState extends State<ListScreenView> {
         return TaskDialogBottomSheet(
           isEdit: isEdit,
           task: task,
-          onSave: (newTask) {},
+          onSave: (newTask) {
+            controller.saveTask(newTask, existingTask: task);
+          },
         );
       },
     );
@@ -41,6 +43,10 @@ class _ListScreenViewState extends State<ListScreenView> {
       appBar: AppBar(
         title: const Text("Task List"),
         actions: [
+           IconButton(
+            icon: const Icon(Icons.date_range),
+            onPressed: () {},
+          ),
           IconButton(
             icon: const Icon(Icons.sort),
             onPressed: () {},
