@@ -16,10 +16,10 @@ class ListScreenController extends GetxController {
   // Form field controllers
   late FormModel formModels;
 
-  // var titleError = Rx<String?>(null);
-  // var statusError = Rx<String?>(null);
-  // var descriptionError = Rx<String?>(null);
-  // var dueDateError = Rx<String?>(null);
+  var titleError = Rx<String?>(null);
+  var statusError = Rx<String?>(null);
+  var descriptionError = Rx<String?>(null);
+  var dueDateError = Rx<String?>(null);
 
   ListScreenController(this._taskApi);
 
@@ -53,42 +53,42 @@ class ListScreenController extends GetxController {
     formModels.decsController.text = data?.description ?? '';
     formModels.statusController.text = data?.status ?? 'Incomplete';
     formModels.dueDateController.text = formatDate(data?.dueDate);
+
   }
 
   void clearTextFields(TaskInfo? data) {
     formModels.clear();
   }
 
-  // String? validateField(String value, String type) {
-  //   switch (type.toLowerCase()) {
-  //     case 'title':
-  //       return value.isEmpty
-  //           ? 'Please enter a title'
-  //           : value.length > 50
-  //               ? 'Title cannot exceed 50 characters'
-  //               : null;
+  String? validateField(String value, String type) {
+    switch (type.toLowerCase()) {
+      case 'title':
+        return value.isEmpty
+            ? 'Please enter a title'
+            : value.length > 50
+                ? 'Title cannot exceed 50 characters'
+                : null;
 
-  //     case 'status':
-  //       return value.isEmpty ? 'Please select a status' : null;
+      case 'status':
+        return value.isEmpty ? 'Please select a status' : null;
 
-  //     case 'duedate':
-  //       return value.isEmpty ? 'Please enter a due date' : null;
+      case 'duedate':
+        return value.isEmpty ? 'Please enter a due date' : null;
 
-  //     default:
-  //       return null;
-  //   }
-  // }
+      default:
+        return null;
+    }
+  }
 
-  // void resetErrors() {
-  //   titleError.value = null;
-  //   statusError.value = null;
-  //   descriptionError.value = null;
-  //   dueDateError.value = null;
-  // }
+  void resetErrors() {
+    titleError.value = null;
+    statusError.value = null;
+    descriptionError.value = null;
+    dueDateError.value = null;
+  }
 
   String formatDate(String? isoDate) {
-    DateTime dateTime =
-        DateTime.parse(isoDate ?? DateTime.now().toIso8601String());
+    DateTime dateTime = DateTime.parse(isoDate ?? DateTime.now().toIso8601String());  
     return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 

@@ -44,12 +44,12 @@ class TaskDialogBottomSheet extends StatelessWidget {
                     minLines: 1,
                     decoration: InputDecoration(
                       labelText: 'Title *',
-                      // errorText: controller.titleError.value,
+                      errorText: controller.titleError.value,
                     ),
-                    // onChanged: (value) {
-                    //   controller.titleError.value =
-                    //       controller.validateField(value, 'title');
-                    // },
+                    onChanged: (value) {
+                      controller.titleError.value =
+                          controller.validateField(value, 'title');
+                    },
                   );
                 }),
                 const SizedBox(height: 10),
@@ -58,12 +58,12 @@ class TaskDialogBottomSheet extends StatelessWidget {
                     value: controller.formModels.statusController.value.text,
                     decoration: InputDecoration(
                       labelText: 'Status *',
-                      // errorText: controller.statusError.value,
+                      errorText: controller.statusError.value,
                     ),
                     onChanged: (newValue) {
                       controller.formModels.statusController.text = newValue!;
-                      // controller.statusError.value =
-                      //     controller.validateField(newValue, 'status');
+                      controller.statusError.value =
+                          controller.validateField(newValue, 'status');
                     },
                     items: <String>['Incomplete', 'Completed']
                         .map<DropdownMenuItem<String>>((String value) {
@@ -82,12 +82,12 @@ class TaskDialogBottomSheet extends StatelessWidget {
                     minLines: 1,
                     decoration: InputDecoration(
                       labelText: 'Description *',
-                      // errorText: controller.descriptionError.value,
+                      errorText: controller.descriptionError.value,
                     ),
-                    // onChanged: (value) {
-                    //   controller.descriptionError.value =
-                    //       controller.validateField(value, 'description');
-                    // },
+                    onChanged: (value) {
+                      controller.descriptionError.value =
+                          controller.validateField(value, 'description');
+                    },
                   );
                 }),
                 const SizedBox(height: 10),
@@ -96,7 +96,7 @@ class TaskDialogBottomSheet extends StatelessWidget {
                     controller: controller.formModels.dueDateController,
                     decoration: InputDecoration(
                       labelText: 'Due Date *',
-                      // errorText: controller.dueDateError.value,
+                      errorText: controller.dueDateError.value,
                     ),
                     readOnly: true,
                     onTap: () async {
@@ -112,10 +112,10 @@ class TaskDialogBottomSheet extends StatelessWidget {
                         controller.formModels.dueDateController.text =
                             '${pickedDate.toLocal()}'.split(' ')[0];
 
-                        // controller.dueDateError.value =
-                        //     controller.validateField(
-                        //         controller.formModels.dueDateController.text,
-                        //         'duedate');
+                        controller.dueDateError.value =
+                            controller.validateField(
+                                controller.formModels.dueDateController.text,
+                                'duedate');
                       }
                     },
                   );

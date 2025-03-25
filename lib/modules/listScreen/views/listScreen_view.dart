@@ -15,7 +15,7 @@ class _ListScreenViewState extends State<ListScreenView> {
   final controller = Get.find<ListScreenController>();
 
   void showTaskDialog({required bool isEdit, TaskInfo? task}) {
-    // controller.resetErrors();
+    controller.resetErrors();
     controller.updateTextFieldsFromModel(task);
 
     if (!isEdit) {
