@@ -63,15 +63,71 @@ class ListScreenController extends GetxController {
     firstTimeFetchOnly();
   }
 
-  void updateTextFieldsFromModel(TaskInfo? data) {
-    formModels.titleController.text = data?.title ?? '';
-    formModels.decsController.text = data?.description ?? '';
-    formModels.statusController.text = data?.status ?? 'Incomplete';
-    formModels.dueDateController.text = formatDate(data?.dueDate);
+  String formatDate(String? isoDate) {
+    DateTime dateTime =
+        DateTime.parse(isoDate ?? DateTime.now().toIso8601String());
+    return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 
-  void clearTextFields(TaskInfo? data) {
-    formModels.clear();
+  void saveTask(TaskInfo task, {TaskInfo? existingTask}) {
+    if (existingTask != null) {
+      final index = _userTask.indexOf(existingTask);
+      if (index != -1) {
+        _userTask[index] = task;
+      }
+    } else {
+      _userTask.add(task);
+    }
+
+    applySort(_currentSort.value);
+    saveTaskToStore(_userTask);
+  }
+
+  void deleteTask(TaskInfo taskToDelete) {
+    _userTask.remove(taskToDelete);
+    saveTaskToStore(_userTask);
+  }
+
+  void restoreTask(TaskInfo taskToRestore, int index) {
+    _userTask.insert(index, taskToRestore);
+    applySort(_currentSort.value);
+    saveTaskToStore(_userTask);
+  }
+
+  void onDateSortPressed() {
+    _toggleSort(SortTypeEnum.byDate);
+  }
+
+  void onStatusSortPressed() {
+    _toggleSort(SortTypeEnum.byStatus);
+  }
+
+  void _toggleSort(SortTypeEnum sortType) {
+    if (_currentSort.value == sortType) {
+      _clearSort();
+    } else {
+      applySort(sortType);
+    }
+  }
+
+  void applySort(SortTypeEnum sortType) {
+    _currentSort.value = sortType;
+
+    switch (sortType) {
+      case SortTypeEnum.byDate:
+        _userTask.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+        break;
+      case SortTypeEnum.byStatus:
+        _userTask.sort((a, b) => a.status.compareTo(b.status));
+        break;
+      case SortTypeEnum.none:
+        break;
+    }
+  }
+
+  void _clearSort() {
+    _currentSort.value = SortTypeEnum.none;
+    setTaskDetails();
   }
 
   String? validateField(String value, String type) {
@@ -94,6 +150,17 @@ class ListScreenController extends GetxController {
     }
   }
 
+  void updateTextFieldsFromModel(TaskInfo? data) {
+    formModels.titleController.text = data?.title ?? '';
+    formModels.decsController.text = data?.description ?? '';
+    formModels.statusController.text = data?.status ?? 'Incomplete';
+    formModels.dueDateController.text = formatDate(data?.dueDate);
+  }
+
+  void clearTextFields(TaskInfo? data) {
+    formModels.clear();
+  }
+
   void resetErrors() {
     titleError.value = null;
     statusError.value = null;
@@ -101,63 +168,29 @@ class ListScreenController extends GetxController {
     dueDateError.value = null;
   }
 
-  String formatDate(String? isoDate) {
-    DateTime dateTime =
-        DateTime.parse(isoDate ?? DateTime.now().toIso8601String());
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+  bool isFormValid() {
+    return formModels.titleController.text.isNotEmpty &&
+        formModels.statusController.text.isNotEmpty &&
+        formModels.dueDateController.text.isNotEmpty;
   }
 
-  void saveTask(TaskInfo task, {TaskInfo? existingTask}) {
-    if (existingTask != null) {
-      final index = _userTask.indexOf(existingTask);
-      if (index != -1) {
-        _userTask[index] = task;
-      }
-    } else {
-      _userTask.add(task);
-    }
-    saveTaskToStore(_userTask);
+  void validateAllFields() {
+    titleError.value = validateField(formModels.titleController.text, 'title');
+    statusError.value =
+        validateField(formModels.statusController.text, 'status');
+    descriptionError.value =
+        validateField(formModels.decsController.text, 'description');
+    dueDateError.value =
+        validateField(formModels.dueDateController.text, 'duedate');
   }
 
-  void deleteTask(TaskInfo taskToDelete) {
-    _userTask.remove(taskToDelete);
-    saveTaskToStore(_userTask);
-  }
-
-  void onDateSortPressed() {
-    _toggleSort(SortTypeEnum.byDate);
-  }
-
-  void onStatusSortPressed() {
-    _toggleSort(SortTypeEnum.byStatus);
-  }
-
-  void _toggleSort(SortTypeEnum sortType) {
-    if (_currentSort.value == sortType) {
-      _clearSort();
-    } else {
-      _applySort(sortType);
-    }
-  }
-
-  void _applySort(SortTypeEnum sortType) {
-    _currentSort.value = sortType;
-
-    switch (sortType) {
-      case SortTypeEnum.byDate:
-        _userTask.sort((a, b) => a.dueDate.compareTo(b.dueDate));
-        break;
-      case SortTypeEnum.byStatus:
-        _userTask.sort((a, b) => a.status.compareTo(b.status));
-        break;
-      case SortTypeEnum.none:
-        break;
-    }
-  }
-
-  void _clearSort() {
-    _currentSort.value = SortTypeEnum.none;
-    setTaskDetails();
+  TaskInfo createTaskInfo() {
+    return TaskInfo(
+      title: formModels.titleController.text,
+      status: formModels.statusController.text,
+      description: formModels.decsController.text,
+      dueDate: formModels.dueDateController.text,
+    );
   }
 
   @override
